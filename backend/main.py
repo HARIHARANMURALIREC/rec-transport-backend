@@ -353,17 +353,23 @@ def create_manual_ride(
         if not driver.is_online:
             raise HTTPException(status_code=400, detail="Driver is not online")
         
-        # Create new ride with required NOT NULL fields set to default values
+        # Get coordinates from request data, default to 0.0 if not provided
+        pickup_lat = ride_data.get('pickup_latitude', 0.0)
+        pickup_lng = ride_data.get('pickup_longitude', 0.0)
+        dropoff_lat = ride_data.get('dropoff_latitude', 0.0)
+        dropoff_lng = ride_data.get('dropoff_longitude', 0.0)
+        
+        # Create new ride with coordinates
         new_ride = DBRide(
             id=str(uuid.uuid4()),
             passenger_id=ride_data['passenger_id'],
             driver_id=ride_data['driver_id'],
             pickup_address=ride_data['pickup_address'],
             dropoff_address=ride_data['dropoff_address'],
-            pickup_latitude=0.0,
-            pickup_longitude=0.0,
-            dropoff_latitude=0.0,
-            dropoff_longitude=0.0,
+            pickup_latitude=pickup_lat,
+            pickup_longitude=pickup_lng,
+            dropoff_latitude=dropoff_lat,
+            dropoff_longitude=dropoff_lng,
             distance=0.0,
             estimated_duration=0,
             status="assigned",  # Directly assign since admin is creating it
